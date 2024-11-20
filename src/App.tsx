@@ -51,6 +51,16 @@ function App() {
     await deleteTask({ taskListId: taskId });
   };
 
+  const handleUpdateTask = async (taskId: Id<"tasks">, title: string, description: string, isStarted: boolean, isCompleted: boolean) => {
+    await updateTask({
+      taskListId: taskId,
+      title,
+      description,
+      isStarted,
+      isCompleted,
+    });
+  }
+
 
   const TaskDisplay = ({task}: {task: Task}) => (
     <div>
@@ -65,21 +75,23 @@ function App() {
           )}
           {task.isStarted && !task.isCompleted && (
             <button
-              onClick={() => handleUpdateStatus(task._id, task.title, task.description, true, true)}
-            >
+              onClick={() => handleUpdateStatus(task._id, task.title, task.description, true, true)}>
               Terminer
             </button>
           )}
           <button
-            onClick={() => handleDeleteTask(task._id)}
-          >
+            onClick={() => handleUpdateTask(task._id, task.title, task.description, task.isStarted, task.isCompleted)}>
+            Mettre à jour
+          </button>
+          <button
+            onClick={() => handleDeleteTask(task._id)} >
             Supprimer
           </button>
     </div>
   );
 
   const taskDisplay = (tasks: Task[] | undefined, emptyMessage: string) => {
-    if (!tasks) return <div className="text-gray-500">Chargement...</div>;
+    if (!tasks) return <div className="text-gray-500">Chargement</div>;
     if (tasks.length === 0) return <div className="text-gray-500">{emptyMessage}</div>;
     return tasks.map((task) => <TaskDisplay key={task._id} task={task} />);
   };
@@ -88,8 +100,11 @@ function App() {
     <div>
       <Hello firstname={firstname} />
       <input type="text" value={firstname} onChange={(e) => setFirstName(e.target.value)} />
-      <input type="textarea" value={description} onChange={(e) => setDescription(e.target.value)} />
       <button onClick={handleClick}>set name</button>
+
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+      <input type="textarea" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <button onClick={() => createTask({ title, description })}>Ajouter</button>
 
       <table>
         <tbody>

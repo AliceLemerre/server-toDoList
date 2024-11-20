@@ -2,12 +2,11 @@ import { query } from "./_generated/server";
 import { v } from "convex/values";
 import {mutation} from "./_generated/server";
 
-// This function will be referred to as `api.myFunctions.getTask`.
-
+// appeler avec `api.myFunctions.getTask
 export const getTask = query({
-    args: { id: v.id("tasks") }, // The ID of the task list. v=value ds la table, tasks 
-    handler: async (ctx, args) => { // The handler function takes a context and the arguments passed to the query to return the result.
-      return await ctx.db.get(args.id); // Return the task list with the given ID.
+    args: { id: v.id("tasks") }, 
+    handler: async (ctx, args) => { 
+      return await ctx.db.get(args.id);
     },
 });
  
@@ -45,8 +44,8 @@ export const getDoingTasks = query({
       .query("tasks")
       .filter((q) => 
         q.and(
-          q.eq(q.field("isCompleted"), false),
-          q.eq(q.field("isStarted"), true)
+          q.eq(q.field("isStarted"), true),
+          q.eq(q.field("isCompleted"), false)
       )
       )
       .order("desc")
@@ -77,7 +76,8 @@ export const createTask = mutation({
       isCompleted: v.optional(v.boolean()),
       isDeleted: v.optional(v.boolean()), },
     handler: async (ctx, args) => {      
-    const newTaskId = await ctx.db.insert("tasks", {  title: args.title,
+    const newTaskId = await ctx.db.insert("tasks", {  
+      title: args.title,
       description: args.description,
       isStarted: args.isStarted ?? false,
       isCompleted: args.isCompleted ?? false,
